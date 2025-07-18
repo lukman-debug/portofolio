@@ -1,0 +1,1524 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lukman Handyanto - Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #ffffff;
+            overflow-x: hidden;
+            background: linear-gradient(135deg, #0c0c0c 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #1a1a2e 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Loading Screen */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0c0c0c, #1a1a2e);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(0, 191, 255, 0.3);
+            border-top: 3px solid #00bfff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .wave {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 200%;
+            height: 100px;
+            background: linear-gradient(90deg, transparent, rgba(0, 191, 255, 0.1), transparent);
+            animation: wave 15s ease-in-out infinite;
+        }
+
+        .wave:nth-child(2) {
+            animation-delay: -5s;
+            animation-duration: 20s;
+            height: 80px;
+        }
+
+        .wave:nth-child(3) {
+            animation-delay: -10s;
+            animation-duration: 25s;
+            height: 60px;
+        }
+
+        @keyframes wave {
+            0%, 100% { transform: translateX(-50%) translateY(0px); }
+            50% { transform: translateX(-50%) translateY(-20px); }
+        }
+
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(0, 191, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(12, 12, 12, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        header.scrolled {
+            background: rgba(12, 12, 12, 0.98);
+            box-shadow: 0 2px 20px rgba(0, 191, 255, 0.2);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #00bfff;
+            text-decoration: none;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #00bfff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a:hover {
+            color: #00bfff;
+        }
+
+        /* Scroll to Top */
+        .scroll-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #00bfff, #0080ff);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(100px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 191, 255, 0.5);
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #00bfff;
+            margin-bottom: 1rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.5s;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #00bfff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.7s;
+        }
+
+        .typing-text {
+            font-size: 1.5rem;
+            color: #cccccc;
+            margin-bottom: 2rem;
+            min-height: 2rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 0.9s;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: fadeInUp 1s ease forwards 1.1s;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #00bfff, #0080ff);
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(0, 191, 255, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 191, 255, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid #00bfff;
+            color: #00bfff;
+        }
+
+        .btn-secondary:hover {
+            background: #00bfff;
+            color: white;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.show {
+            display: block;
+            opacity: 1;
+        }
+
+        .modal-content {
+            position: relative;
+            width: 90%;
+            max-width: 1000px;
+            margin: 50px auto;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlideIn 0.5s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 30px;
+            color: #00bfff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: rgba(0, 191, 255, 0.1);
+        }
+
+        .close-modal:hover {
+            background: rgba(0, 191, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid rgba(0, 191, 255, 0.2);
+            padding-bottom: 1rem;
+        }
+
+        .modal-date {
+            color: #00bfff;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .modal-images {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .modal-image {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            background: rgba(0, 191, 255, 0.1);
+        }
+
+        .modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .modal-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .modal-info {
+            display: grid;
+            gap: 2rem;
+        }
+
+        .modal-description h3,
+        .modal-details h3,
+        .modal-tech h3 {
+            color: #00bfff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .modal-description p {
+            color: #cccccc;
+            line-height: 1.8;
+        }
+
+        .modal-details ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .modal-details ul li {
+            color: #cccccc;
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .modal-details ul li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: #00bfff;
+        }
+
+        @media (max-width: 768px) {
+            .modal-images {
+                grid-template-columns: 1fr;
+            }
+        }
+        /* Sections */
+        section {
+            padding: 80px 0;
+            position: relative;
+        }
+
+        .section-glass {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #00bfff, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .profile-img {
+            font-size: 8rem;
+            text-align: center;
+            filter: drop-shadow(0 0 20px rgba(0, 191, 255, 0.5));
+        }
+
+        .about-text h3 {
+            font-size: 1.5rem;
+            color: #00bfff;
+            margin-bottom: 1rem;
+        }
+
+        .about-text p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+            color: #cccccc;
+        }
+
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .skill-item {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 191, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .skill-item:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-color: #00bfff;
+            box-shadow: 0 10px 30px rgba(0, 191, 255, 0.3);
+        }
+
+        .skill-item h4 {
+            font-size: 1.2rem;
+            color: #00bfff;
+            margin-bottom: 0.5rem;
+        }
+
+        .skill-item p {
+            color: #cccccc;
+        }
+
+        /* Projects Section */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .project-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(0, 191, 255, 0.3);
+            border-color: rgba(0, 191, 255, 0.5);
+        }
+
+        .project-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .project-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 191, 255, 0.1) 50%, transparent 70%);
+            animation: shimmer 2s infinite;
+        }
+
+        .project-image-placeholder {
+            font-size: 4rem;
+            color: rgba(0, 191, 255, 0.7);
+            filter: drop-shadow(0 0 10px rgba(0, 191, 255, 0.5));
+        }
+
+        .project-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            color: #00bfff;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .project-card:hover .project-overlay {
+            opacity: 1;
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-card h3 {
+            font-size: 1.3rem;
+            color: #00bfff;
+            margin-bottom: 1rem;
+        }
+
+        .project-card p {
+            color: #cccccc;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(0, 191, 255, 0.2);
+            color: #00bfff;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(0, 191, 255, 0.3);
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        /* Contact Section */
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #00bfff;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00bfff;
+            box-shadow: 0 0 10px rgba(0, 191, 255, 0.3);
+        }
+
+        .form-group textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(12, 12, 12, 0.95);
+            padding: 2rem 0;
+            text-align: center;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .social-links a {
+            font-size: 1.5rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            filter: grayscale(100%);
+        }
+
+        .social-links a:hover {
+            filter: grayscale(0%);
+            transform: scale(1.2);
+        }
+
+        footer p {
+            color: #cccccc;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Animations */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .typing-text {
+                font-size: 1.2rem;
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .profile-img {
+                font-size: 6rem;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .section-glass {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div class="loading" id="loading">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="wave"></div>
+        <div class="wave"></div>
+        <div class="wave"></div>
+    </div>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" id="scrollTop">↑</button>
+
+    <header>
+        <nav class="container">
+            <a href="#" class="logo">LH</a>
+            <ul class="nav-links">
+                <li><a href="#home">Beranda</a></li>
+                <li><a href="#about">Tentang</a></li>
+                <li><a href="#skills">Keahlian</a></li>
+                <li><a href="#projects">Projek</a></li>
+                <li><a href="#contact">Kontak</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <div class="hero-subtitle">Portfolio</div>
+                <h1>Lukman Handyanto</h1>
+                <p class="typing-text">Marine Information Systems Developer & Data Analyst</p>
+                <div class="hero-buttons">
+                    <a href="#projects" class="btn">Lihat Karya Saya</a>
+                    <a href="#contact" class="btn btn-secondary">Hubungi Saya</a>
+                </div>
+            </div>
+        </section>
+
+        <div class="container">
+            <section class="about animate-on-scroll" id="about">
+                <div class="section-glass">
+                    <h2>Tentang Saya</h2>
+                    <div class="about-content">
+                        <div class="profile-img">
+                            <img src="profil.png" alt="Lukman Handyanto" style="border-radius: 20%; width: 150px; height: 150px; filter: drop-shadow(0 0 20px rgba(0, 191, 255, 0.5));">
+                        </div>
+                        <div class="about-text">
+                            <h3>Saya Lukman Handyanto</h3>
+                            <p>Saya adalah mahasiswa Sistem Informasi Kelautan di Universitas Pendidikan Indonesia dengan IPK 3.86. Saya memiliki passion yang tinggi terhadap teknologi, khususnya dalam pengembangan website, pengelolaan basis data, dan GIS (Sistem Informasi Geografis).</p>
+                            <p>Saya tertarik pada pengolahan data dan machine learning untuk analisis data kelautan. Berpengalaman menggunakan Python, PHP, Javascript, ArcGIS, dan MySQL. Saya percaya bahwa teknologi tidak hanya tentang coding, tapi juga tentang menciptakan solusi yang berguna untuk masyarakat, terutama di bidang kelautan dan perikanan.</p>
+                            <p>Saat ini saya aktif sebagai Asisten Penelitian Dosen untuk proyek prediksi tinggi gelombang laut menggunakan LSTM dan terus mengembangkan kemampuan melalui berbagai proyek riset.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="skills animate-on-scroll" id="skills">
+                <div class="section-glass">
+                    <h2>Keahlian Saya</h2>
+                    <div class="skills-grid">
+                        <div class="skill-item">
+                            <h4>Python</h4>
+                            <p>Data Analysis & ML</p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>PHP</h4>
+                            <p>Web Development</p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>JavaScript</h4>
+                            <p>Frontend Development</p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>MySQL</h4>
+                            <p>Database Management</p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>ArcGIS</h4>
+                            <p>Geographic Information System</p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>TensorFlow</h4>
+                            <p>Machine Learning</p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>LSTM</h4>
+                            <p>Time Series Prediction</p>
+                        </div>
+                        <div class="skill-item">
+                            <h4>Data Visualization</h4>
+                            <p>Charts & Analytics</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="projects animate-on-scroll" id="projects">
+                <div class="section-glass">
+                    <h2>Projek Saya</h2>
+                    <div class="projects-grid">
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="project-image-placeholder">🌐</div>
+                                <div class="project-overlay">Lihat Detail Projek</div>
+                            </div>
+                            <div class="project-content">
+                                <h3>SIBINTANG.ID - Sistem Informasi Perikanan</h3>
+                                <p>Sistem informasi berbasis web untuk pendataan aktivitas perikanan tangkap, termasuk data nelayan, kelompok nelayan, dan armada perikanan di Kabupaten Sukabumi.</p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">https://sibintang.id</span>
+                                    <span class="tech-tag">PHP</span>
+                                    <span class="tech-tag">MySQL</span>
+                                    <span class="tech-tag">JavaScript</span>
+                                    <span class="tech-tag">Bootstrap</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="project-image-placeholder">📈</div>
+                                <div class="project-overlay">Lihat Detail Projek</div>
+                            </div>
+                            <div class="project-content">
+                                <h3>LSTM Wave Height Prediction</h3>
+                                <p>Pemodelan Long Short-Term Memory Multivariate untuk prediksi tinggi gelombang laut di Selat Sunda menggunakan machine learning dan analisis data historis.</p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">Python</span>
+                                    <span class="tech-tag">TensorFlow</span>
+                                    <span class="tech-tag">LSTM</span>
+                                    <span class="tech-tag">Data Analysis</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="project-image-placeholder">🌐</div>
+                                <div class="project-overlay">Lihat Detail Projek</div>
+                            </div>
+                            <div class="project-content">
+                                <h3>PGSD Serang Website</h3>
+                                <p>Website program studi Pendidikan Guru Sekolah Dasar Universitas Pendidikan Indonesia Kampus Serang yang menyediakan informasi lengkap program studi.</p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">https://pgsd-serang.upi.edu</span>
+                                    <span class="tech-tag">PHP</span>
+                                    <span class="tech-tag">MySQL</span>
+                                    <span class="tech-tag">JavaScript</span>
+                                    <span class="tech-tag">Bootstrap</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="project-image-placeholder">📈</div>
+                                <div class="project-overlay">Lihat Detail Projek</div>
+                            </div>
+                            <div class="project-content">
+                                <h3>LSTM Wave Height Significan Prediction</h3>
+                                <p>Analisis data kelautan menggunakan Python dan machine learning untuk memahami pola dan tren dalam data oseanografi dan perikanan.</p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">Python</span>
+                                    <span class="tech-tag">Pandas</span>
+                                    <span class="tech-tag">Matplotlib</span>
+                                    <span class="tech-tag">Machine Learning</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="project-image-placeholder">📊</div>
+                                <div class="project-overlay">Lihat Detail Projek</div>
+                            </div>
+                            <div class="project-content">
+                                <h3>InformaSea AI Platform</h3>
+                                <p>Pengembangan platform website “InformaSea” berbasis AI yang menyediakan informasi kelautan dan perikanan Indonesia secara cerdas dan interaktif.</p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">CNN</span>
+                                    <span class="tech-tag">Django</span>
+                                    <span class="tech-tag">AI</span>
+                                    <span class="tech-tag">Javascript</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="project-card">
+                            <div class="project-image">
+                                <div class="project-image-placeholder">🌐</div>
+                                <div class="project-overlay">Lihat Detail Projek</div>
+                            </div>
+                            <div class="project-content">
+                                <h3>InformaSea Realtime Marine Data</h3>
+                                <p>Pembuatan website “InformaSea” sebagai sistem penyedia informasi kelautan dan oseanografi secara real-time, mencakup data cuaca laut, gempa bumi, dan parameter oseanografi lainnya.</p>
+                                <div class="project-tech">
+                                    <span class="tech-tag">CNN</span>
+                                    <span class="tech-tag">Django</span>
+                                    <span class="tech-tag">AI</span>
+                                    <span class="tech-tag">Javascript</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="contact animate-on-scroll" id="contact">
+                <div class="section-glass">
+                    <h2>Hubungi Saya</h2>
+                    <div class="contact-form">
+                        <form id="contactForm">
+                            <div class="form-group">
+                                <label for="name">Nama Lengkap</label>
+                                <input type="text" id="name" name="name" placeholder="Masukkan nama lengkap Anda" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" placeholder="Masukkan email Anda" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subjek</label>
+                                <input type="text" id="subject" name="subject" placeholder="Subjek pesan" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Pesan</label>
+                                <textarea id="message" name="message" placeholder="Tulis pesan Anda di sini..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn">Kirim Pesan</button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <!-- Project Modal -->
+    <div id="projectModal" class="modal">
+        <div class="modal-content section-glass">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <p id="modalDate"></p>
+            </div>
+            <div class="modal-body">
+                <div class="modal-images">
+                    <div class="modal-image">
+                        <img id="modalImage1" src="" alt="Project Documentation 1">
+                    </div>
+                    <div class="modal-image">
+                        <img id="modalImage2" src="" alt="Project Documentation 2">
+                    </div>
+                </div>
+                <div class="modal-info">
+                    <div class="modal-description">
+                        <h3>Deskripsi Proyek</h3>
+                        <p id="modalDescription"></p>
+                    </div>
+                    <div class="modal-details">
+                        <h3>Detail Pekerjaan</h3>
+                        <ul id="modalWorkDetails"></ul>
+                    </div>
+                    <div class="modal-tech">
+                        <h3>Teknologi yang Digunakan</h3>
+                        <div id="modalTechStack" class="project-tech"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="social-links">
+                <a href="#" title="LinkedIn">💼</a>
+                <a href="#" title="GitHub">🐙</a>
+                <a href="#" title="Email">📧</a>
+                <a href="#" title="WhatsApp">📱</a>
+            </div>
+            <p>&copy; 2025 Lukman Handyanto. Dibuat dengan ❤️ dan teknologi modern.</p>
+            <p>Marine Information Systems Developer & Data Analyst</p>
+        </div>
+    </footer>
+
+    <script>
+        // Page Loading Animation
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                document.getElementById('loading').classList.add('hide');
+            }, 1000);
+        });
+
+        // Typing Animation
+        const typingTexts = [
+            "Marine Information Systems Developer & Data Analyst",
+            "Python & Machine Learning Enthusiast",
+            "GIS & Spatial Analysis Expert",
+            "Web Developer & Database Manager"
+        ];
+        
+        let currentTextIndex = 0;
+        let currentCharIndex = 0;
+        let isDeleting = false;
+        const typingElement = document.querySelector('.typing-text');
+        
+        function typeText() {
+            const currentText = typingTexts[currentTextIndex];
+            
+            if (isDeleting) {
+                typingElement.textContent = currentText.substring(0, currentCharIndex - 1);
+                currentCharIndex--;
+                
+                if (currentCharIndex === 0) {
+                    isDeleting = false;
+                    currentTextIndex = (currentTextIndex + 1) % typingTexts.length;
+                    setTimeout(typeText, 500);
+                } else {
+                    setTimeout(typeText, 50);
+                }
+            } else {
+                typingElement.textContent = currentText.substring(0, currentCharIndex + 1);
+                currentCharIndex++;
+                
+                if (currentCharIndex === currentText.length) {
+                    isDeleting = true;
+                    setTimeout(typeText, 2000);
+                } else {
+                    setTimeout(typeText, 100);
+                }
+            }
+        }
+        
+        setTimeout(typeText, 2000);
+
+        // Floating Particles Animation
+        function createParticles() {
+            const particlesContainer = document.querySelector('.animated-bg');
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        createParticles();
+
+        // Header Scroll Effect
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth Scrolling for Navigation Links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll to Top Button
+        const scrollTopBtn = document.getElementById('scrollTop');
+        
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+        
+        scrollTopBtn.addEventListener('click', function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Animate on Scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(element => {
+            observer.observe(element);
+        });
+
+        // Skill Items Hover Effect
+        document.querySelectorAll('.skill-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px) scale(1.05)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Project Cards Click Effect
+        // document.querySelectorAll('.project-card').forEach(card => {
+        //     card.addEventListener('click', function() {
+        //         const title = this.querySelector('h3').textContent;
+        //         const description = this.querySelector('p').textContent;
+                
+        //         // Simple alert for demonstration - in real implementation, this could open a modal
+        //         alert(`${title}\n\n${description}\n\nFitur lengkap akan segera tersedia!`);
+        //     });
+        // });
+
+        // Contact Form Handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form data
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const subject = formData.get('subject');
+            const message = formData.get('message');
+            
+            // Simple validation
+            if (!name || !email || !subject || !message) {
+                alert('Mohon lengkapi semua field yang diperlukan!');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Mohon masukkan email yang valid!');
+                return;
+            }
+            
+            // Simulate form submission
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            
+            submitButton.textContent = 'Mengirim...';
+            submitButton.disabled = true;
+            
+            setTimeout(() => {
+                alert(`Terima kasih ${name}! Pesan Anda telah diterima dan akan segera direspons.`);
+                this.reset();
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+            }, 2000);
+        });
+
+        // Dynamic Background Color Change
+        function updateBackgroundColor() {
+            const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+            const hue = Math.floor(scrollPercent * 60) + 200; // Blue to cyan range
+            document.body.style.background = `linear-gradient(135deg, #0c0c0c 0%, hsl(${hue}, 70%, 15%) 25%, hsl(${hue}, 60%, 20%) 50%, hsl(${hue}, 70%, 25%) 75%, #1a1a2e 100%)`;
+        }
+
+        window.addEventListener('scroll', updateBackgroundColor);
+
+        // Preload Images Effect
+        function preloadImages() {
+            const images = [
+                'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI4MCIgZmlsbD0iIzAwYmZmZiIgZmlsbC1vcGFjaXR5PSIwLjEiLz48L3N2Zz4='
+            ];
+            
+            images.forEach(src => {
+                const img = new Image();
+                img.src = src;
+            });
+        }
+
+        preloadImages();
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                document.querySelector('#contact input[type="text"]').focus();
+            }
+        });
+
+        // Performance optimization for animations
+        let ticking = false;
+        
+        function updateAnimations() {
+            // Update particle positions or other animations here
+            ticking = false;
+        }
+        
+        window.addEventListener('scroll', function() {
+            if (!ticking) {
+                requestAnimationFrame(updateAnimations);
+                ticking = true;
+            }
+        });
+        
+        // Project Modal Functionality
+        const modal = document.getElementById('projectModal');
+        const closeModal = document.querySelector('.close-modal');
+        const projectData = {
+            'SIBINTANG.ID': {
+                title: 'SIBINTANG.ID - Sistem Informasi Perikanan',
+                date: 'Februari 2025 - Mei 2025',
+                images: ['sibintang.png', 'sibintang2.jpg'],
+                description: 'Sistem informasi berbasis web untuk pendataan aktivitas perikanan tangkap, termasuk data nelayan, kelompok nelayan, dan armada perikanan di Kabupaten Sukabumi.',
+                workDetails: [
+                    'Mengembangkan sistem manajemen database untuk data perikanan',
+                    'Merancang dan mengimplementasikan antarmuka pengguna yang responsif',
+                    'Mengintegrasikan sistem autentikasi dan otorisasi',
+                    'Membuat fitur pelaporan dan visualisasi data'
+                ],
+                techStack: ['https://sibintang.id','PHP', 'MySQL', 'JavaScript', 'Bootstrap'],
+                url: 'https://sibintang.id'
+            },
+            'LSTM Wave Height Prediction': {
+                title: 'LSTM Wave Height Prediction',
+                date: 'Juni 2025 - Sekarang',
+                images: [
+                    'lstm-multi.jpg', // Ganti dengan path gambar dokumentasi sebenarnya
+                    'lstm-multi.png'  // Ganti dengan path gambar dokumentasi sebenarnya
+                ],
+                description: 'Pemodelan Long Short-Term Memory Multivariate untuk prediksi tinggi gelombang laut di Selat Sunda menggunakan machine learning dan analisis data historis.',
+                workDetails: [
+                    'Mengembangkan model LSTM untuk prediksi tinggi gelombang laut',
+                    'Melakukan preprocessing dan analisis data historis gelombang laut',
+                    'Mengimplementasikan arsitektur deep learning menggunakan TensorFlow',
+                    'Melakukan evaluasi model dan optimisasi performa',
+                    'Membuat visualisasi hasil prediksi dan perbandingan dengan data aktual'
+                ],
+                techStack: ['Python', 'TensorFlow', 'LSTM', 'Data Analysis'],
+                url: ''
+            },
+            
+            'PGSD Serang Website': {
+                title: 'PGSD Serang Website',
+                date: 'Januari 2025',
+                images: [
+                    'pgsd.png', // Ganti dengan path gambar dokumentasi sebenarnya
+                    'pgsd2.png'  // Ganti dengan path gambar dokumentasi sebenarnya
+                ],
+                description: 'Website program studi Pendidikan Guru Sekolah Dasar Universitas Pendidikan Indonesia Kampus Serang yang menyediakan informasi lengkap program studi.',
+                workDetails: [
+                    'Merancang dan mengembangkan website responsif untuk program studi',
+                    'Mengimplementasikan sistem manajemen konten untuk pengelolaan informasi',
+                    'Membuat fitur pendaftaran dan manajemen mahasiswa',
+                    'Mengintegrasikan database untuk penyimpanan data akademik',
+                    'Mengoptimasi performa website dan SEO'
+                ],
+                techStack: ['https://pgsd-serang.upi.edu','PHP', 'MySQL', 'JavaScript', 'Bootstrap'],
+                url: 'https://pgsd-serang.upi.edu/'
+            },
+            
+            'LSTM Wave Height Significan Prediction': {
+                title: 'LSTM Wave Height Significan Prediction',
+                date: 'Maret 2024 - September 2024',
+                images: [
+                    'lstm-uni.jpg', // Ganti dengan path gambar dokumentasi sebenarnya
+                    'lstm-uni.jpg'  // Ganti dengan path gambar dokumentasi sebenarnya
+                ],
+                description: 'pembuatan model prediksi tinggi gelombang signifikan di wilayah perairan selat sunda menggunakan algoritma long short term memory.',
+                workDetails: [
+                    'Melakukan pengolahan dan preprocessing data oseanografi (cleaning, imputasi, normalisasi) untuk membangun dataset multivariat',
+                    'Mengembangkan dan melatih arsitektur LSTM multivariat di TensorFlow untuk memprediksi tinggi gelombang signifikan (Hs)',
+                    'Menerapkan pipeline XGBoost untuk memprediksi variabel fitur lingkungan (angin, tekanan, suhu, dll.) sebagai input model LSTM',
+                    'Menyusun dan menerbitkan artikel ilmiah tentang metodologi dan hasil penelitian dalam jurnal atau prosiding',
+                    'Melakukan deployment model gabungan (XGBoost + LSTM) ke server dan mengintegrasikannya ke dashboard web interaktif menggunakan Flask & Leaflet'
+                    ],
+                techStack: ['Python', 'Pandas', 'Matplotlib', 'Machine Learning'],
+                url: ''
+            },
+            
+            'InformaSea AI Platform': {
+                title: 'InformaSea AI Platform',
+                date: 'September 2024 - Desember 2024',
+                images: [
+                    'informasea-ai.jpg', // Ganti dengan path dokumentasi nyata
+                    'informasea-ai.png'
+                ],
+                description: 'Pengembangan platform website “InformaSea” berbasis AI yang menyediakan informasi kelautan dan perikanan Indonesia secara cerdas dan interaktif.',
+                workDetails: [
+                    'Merancang dan mengembangkan website kelautan berbasis AI dengan antarmuka responsif',
+                    'Membangun model klasifikasi citra untuk identifikasi jenis ubur-ubur dan tingkat kesehatan ikan',
+                    'Mengembangkan model prediksi tinggi gelombang laut menggunakan LSTM',
+                    'Membuat chatbot kelautan berbasis NLP untuk menjawab pertanyaan pengguna secara otomatis',
+                    'Mengintegrasikan peta interaktif berbasis Leaflet untuk visualisasi data spasial kelautan'
+                ],
+                techStack: ['Python', 'TensorFlow', 'Flask', 'Leaflet.js', 'HTML/CSS/JS', 'OpenCV', 'NLP', 'Bootstrap'],
+                url: ''
+            },
+            'InformaSea Realtime Marine Data': {
+                title: 'InformaSea Realtime Marine Data Platform',
+                date: 'September 2023 - Januari 2024',
+                images: [
+                    'informasea-web.jpg', // Ganti dengan path dokumentasi asli
+                    'informasea-web2.jpg'
+                ],
+                description: 'Pembuatan website “InformaSea” sebagai sistem penyedia informasi kelautan dan oseanografi secara real-time, mencakup data cuaca laut, gempa bumi, dan parameter oseanografi lainnya.',
+                workDetails: [
+                    'Mengembangkan sistem integrasi API dari berbagai sumber data kelautan dan BMKG secara real-time',
+                    'Menyajikan informasi cuaca laut terkini, data gempa, pasang surut, suhu permukaan laut, dan tekanan udara',
+                    'Merancang dashboard antarmuka yang responsif dan user-friendly untuk publik dan pemangku kepentingan',
+                    'Mengelola parsing dan normalisasi data dari berbagai format (JSON, XML, CSV)',
+                    'Membangun fitur peta interaktif untuk visualisasi lokasi data secara spasial'
+                ],
+                techStack: ['JavaScript', 'REST API', 'Flask', 'Leaflet.js', 'HTML/CSS', 'Bootstrap', 'Python'],
+                url: ''
+            }
+
+
+
+        };
+        
+        document.querySelectorAll('.project-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const title = this.querySelector('h3').textContent;
+                const project = projectData[title.split(' - ')[0]] || {
+                    title: title,
+                    date: '2024',
+                    images: ['placeholder1.jpg', 'placeholder2.jpg'],
+                    description: this.querySelector('p').textContent,
+                    workDetails: ['Detail pekerjaan akan ditambahkan'],
+                    techStack: Array.from(this.querySelectorAll('.tech-tag')).map(tag => tag.textContent)
+                };
+
+                // Populate modal content
+                document.getElementById('modalTitle').textContent = project.title;
+                document.getElementById('modalDate').textContent = project.date;
+                document.getElementById('modalDescription').textContent = project.description;
+                
+                // Set images
+                document.getElementById('modalImage1').src = project.images[0];
+                document.getElementById('modalImage2').src = project.images[1];
+                
+                // Populate work details
+                const workDetailsList = document.getElementById('modalWorkDetails');
+                workDetailsList.innerHTML = project.workDetails.map(detail => `<li>${detail}</li>`).join('');
+                
+                // Populate tech stack
+                const techStackContainer = document.getElementById('modalTechStack');
+                techStackContainer.innerHTML = project.techStack.map(tech => 
+                    `<span class="tech-tag">${tech}</span>`
+                ).join('');
+                
+                // Show modal
+                modal.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            });
+        });
+
+        // Close modal functionality
+        closeModal.addEventListener('click', () => {
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                modal.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+        });
+        // Add click effects to buttons
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Add CSS for ripple effect
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Console welcome message
+        console.log(`
+        🌊 Selamat datang di portfolio Lukman Handyanto! 🌊
+        
+        Terima kasih telah mengunjungi website saya.
+        Jika Anda tertarik untuk berkolaborasi atau memiliki pertanyaan,
+        jangan ragu untuk menghubungi saya melalui form kontak.
+        
+        Tech Stack yang digunakan:
+        - Vanilla JavaScript
+        - CSS3 dengan Advanced Animations
+        - HTML5 Semantic Elements
+        - Modern Web APIs
+        
+        Happy coding! 🚀
+        `);
+    </script>
+</body>
+</html>
