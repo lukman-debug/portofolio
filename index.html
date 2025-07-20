@@ -315,26 +315,31 @@
                 transform: translateY(0);
             }
         }
-        /* Modal Styles */
+        /* Modal Overlay: Glassy Deep Blue Gradient */
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(8px);
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            /* Deep blue gradient + glass effect */
+            background: 
+            linear-gradient(115deg, #101824 0%, #1a2233 55%, #174ea6 100%) no-repeat;
+            background-size: cover;
+            backdrop-filter: blur(14px) saturate(1.2);
+            -webkit-backdrop-filter: blur(14px) saturate(1.2);
             z-index: 2000;
             opacity: 0;
             transition: opacity 0.3s ease;
+            overflow-y: auto;
         }
 
+        /* Show modal */
         .modal.show {
             display: block;
             opacity: 1;
         }
 
+        /* Modal Content Box */
         .modal-content {
             position: relative;
             width: 90%;
@@ -343,6 +348,49 @@
             max-height: 90vh;
             overflow-y: auto;
             animation: modalSlideIn 0.5s ease;
+            background: rgba(18, 22, 28, 0.97);
+            border-radius: 24px;
+            box-shadow: 0 8px 40px 0 #0d1933cc;
+            border: 1.5px solid #145abf33;
+            padding-bottom: 18px;
+        }
+
+        /* Custom Scrollbar: Deep Blue Theme */
+        .modal-content::-webkit-scrollbar {
+            width: 10px;
+            background: #182033;
+            border-radius: 8px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: linear-gradient(120deg, #174ea6 40%, #101824 100%);
+            border-radius: 8px;
+            min-height: 28px;
+        }
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(120deg, #174ea6 10%, #00bfff 90%);
+        }
+        .modal-content {
+            scrollbar-width: thin;
+            scrollbar-color: #174ea6 #182033;
+        }
+
+        /* Close Button */
+        .close-modal {
+            position: absolute;
+            right: 24px; top: 24px;
+            font-size: 2rem;
+            color: #00bfff;
+            background: rgba(23, 78, 166, 0.10);
+            border-radius: 50%;
+            width: 42px; height: 42px;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.2s;
+            z-index: 10;
+        }
+        .close-modal:hover {
+            background: rgba(0, 191, 255, 0.16);
+            transform: rotate(90deg) scale(1.05);
         }
 
         @keyframes modalSlideIn {
@@ -799,16 +847,8 @@
     <header>
         <nav class="container">
             <a href="#" class="logo">
-                <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="80" height="80" rx="18" fill="#1a2233"/>
-  <!-- Huruf L -->
-  <text x="15" y="57" font-family="Consolas, 'Fira Mono', monospace" font-size="48" fill="#00ffc8" font-weight="bold">L</text>
-  <!-- Huruf H -->
-  <text x="45" y="57" font-family="Consolas, 'Fira Mono', monospace" font-size="48" fill="#00ffc8" font-weight="bold">H</text>
-  <!-- Elemen "programming" visual: kurung sudut -->
-  <text x="8" y="30" font-family="Consolas, 'Fira Mono', monospace" font-size="24" fill="#ffae00">&lt;</text>
-  <text x="62" y="30" font-family="Consolas, 'Fira Mono', monospace" font-size="24" fill="#ffae00">&gt;</text>
-</svg>
+                <img src="logo.webp" alt="Lukman Handyanto" 
+                style=" width: 50px; height: 50px;">
             </a>
             <ul class="nav-links">
                 <li><a href="#home">Beranda</a></li>
@@ -901,7 +941,7 @@
                                 <div class="project-overlay">Lihat Detail Projek</div>
                             </div>
                             <div class="project-content">
-                                <h3>SIBINTANG.ID - Sistem Informasi Perikanan</h3>
+                                <h3>SIBINTANG.ID</h3>
                                 <p>Sistem informasi berbasis web untuk pendataan aktivitas perikanan tangkap, termasuk data nelayan, kelompok nelayan, dan armada perikanan di Kabupaten Sukabumi.</p>
                                 <div class="project-tech">
                                     <span class="tech-tag">PHP</span>
@@ -1072,7 +1112,6 @@
             "Marine Information Systems ",
             "Developer & Data Analyst",
             "Python & Machine Learning Enthusiast",
-            "GIS & Spatial Analysis Expert",
             "Web Developer & Database Manager"
         ];
         
@@ -1298,7 +1337,7 @@
         const closeModal = document.querySelector('.close-modal');
         const projectData = {
             'SIBINTANG.ID': {
-                title: 'SIBINTANG.ID - Sistem Informasi Perikanan',
+                title: 'SIBINTANG.ID - Dinas Perikanan Kabupaten Sukabumi',
                 date: 'Februari 2025 - Mei 2025',
                 images: ['sibintang.webp', 'sibintang2.webp'],
                 description: 'Sistem informasi berbasis web untuk pendataan aktivitas perikanan tangkap, termasuk data nelayan, kelompok nelayan, dan armada perikanan di Kabupaten Sukabumi.',
@@ -1316,7 +1355,7 @@
                 date: 'Juni 2025 - Sekarang',
                 images: [
                     'lstm-multi.webp', // Ganti dengan path gambar dokumentasi sebenarnya
-                    'lstm-multi.webp'  // Ganti dengan path gambar dokumentasi sebenarnya
+                    'lstm-multi (1).webp'  // Ganti dengan path gambar dokumentasi sebenarnya
                 ],
                 description: 'Pemodelan Long Short-Term Memory Multivariate untuk prediksi tinggi gelombang laut di Selat Sunda menggunakan machine learning dan analisis data historis.',
                 workDetails: [
@@ -1373,7 +1412,7 @@
                 date: 'September 2024 - Desember 2024',
                 images: [
                     'informasea-ai.webp', // Ganti dengan path dokumentasi nyata
-                    'informasea-ai.webp'
+                    'informasea-ai (1).webp'
                 ],
                 description: 'Pengembangan platform website “InformaSea” berbasis AI yang menyediakan informasi kelautan dan perikanan Indonesia secara cerdas dan interaktif.',
                 workDetails: [
@@ -1408,19 +1447,6 @@
 
 
         };
-        Object.values(projectData).forEach(project => {
-        project.images.forEach((img, idx) => {
-            const webpImg = img.replace(/\.(png|jpe?g)$/i, '.webp');
-            document.write(`
-            <div class="modal-image">
-                <picture>
-                <source srcset="images/${webpImg}" type="image/webp">
-                <img src="images/${img}" alt="${project.title} ${idx+1}" />
-                </picture>
-            </div>
-            `);
-        });
-        });
         
         document.querySelectorAll('.project-card').forEach(card => {
             card.addEventListener('click', function() {
